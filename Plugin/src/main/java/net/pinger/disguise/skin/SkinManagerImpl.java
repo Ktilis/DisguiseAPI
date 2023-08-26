@@ -1,12 +1,16 @@
-package net.pinger.disguise;
+package net.pinger.disguise.skin;
 
 import com.google.gson.JsonObject;
+import net.pinger.disguise.DisguiseAPI;
+import net.pinger.disguise.DisguisePlugin;
 import net.pinger.disguise.exception.UserNotFoundException;
 import net.pinger.disguise.http.HttpRequest;
 import net.pinger.disguise.http.HttpResponse;
 import net.pinger.disguise.http.request.HttpGetRequest;
 import net.pinger.disguise.http.request.HttpPostRequest;
 import net.pinger.disguise.response.Response;
+import net.pinger.disguise.skin.Skin;
+import net.pinger.disguise.skin.SkinManager;
 import net.pinger.disguise.util.ConverterUtil;
 import net.pinger.disguise.util.HttpUtil;
 import org.bukkit.Bukkit;
@@ -15,7 +19,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class SkinManagerImpl implements SkinManager {
@@ -65,7 +68,7 @@ public class SkinManagerImpl implements SkinManager {
                     JsonObject textured = object.getAsJsonObject("data").getAsJsonObject("texture");
 
                     // Instantiate the skin and store this url
-                    Skin newSkin = new Skin(textured.get("value").getAsString(), textured.get("signature").getAsString());
+                    Skin newSkin = Skin.of(textured.get("value").getAsString(), textured.get("signature").getAsString());
                     this.skins.put(imageUrl, newSkin);
 
                     // Update the response consumer
@@ -125,7 +128,7 @@ public class SkinManagerImpl implements SkinManager {
                     .get(0)
                     .getAsJsonObject();
 
-            return new Skin(properties.get("value").getAsString(), properties.get("signature").getAsString());
+            return Skin.of(properties.get("value").getAsString(), properties.get("signature").getAsString());
         } catch (IOException e) {
             // If an exception is caught
             // We just want to return null
